@@ -8,6 +8,7 @@
         { "include": "#binding-word" },
         { "include": "#function-declaration-word" },
         { "include": "#control-flow-keyword" },
+        { "include": "#beginend" },
         { "include": "#other-keyword" },
         { "include": "#integer-literal" },
         { "include": "#boolean-literal" },
@@ -18,7 +19,8 @@
         { "include": "#period" },
         { "include": "#semicolon" },
         { "include": "#comma" },
-        { "include": "#operators" }
+        { "include": "#operators" },
+        { "include": "#paren-expression" }
       ]
     },
     "tresml_page-expression": {
@@ -31,7 +33,23 @@
           "patterns": [{ "include": "text.html.derivative" }]
         }
       ]
-    },   
+    },
+    "beginend": {
+      "match": "begin|end",
+      "name": "keyword.other.tml"
+    },
+    "paren-expression": {
+      "begin": "\\(|begin",
+      "end": "\\)|end",
+      "beginCaptures": {
+        "0": { "name": "punctuation.paren.open" }
+      },
+      "endCaptures": {
+        "0": { "name": "punctuation.paren.close" }
+      },
+      "name": "expression.group",
+      "patterns": [{ "include": "#expression" }]
+    },
     "binding-word": {
       "match": "let",
       "name": "keyword.tml"

@@ -9,9 +9,11 @@
     ["<{", "}>"],
     // ["[", "]"],
     // ["{", "}"],
-    ["(", ")"]
+    ["(", ")"],
+    ["begin", "end"]
   ],
   "autoClosingPairs": [
+    { "open": "begin", "close": "end" },
     { "open": "%{", "close": "}%" },
     { "open": "<{", "close": "}>" },
     { "open": "<[", "close": "]>" },
@@ -37,7 +39,7 @@
   },
   "wordPattern": "(-?\\d*\\.\\d\\w*)|([^\\`\\~\\!\\@\\#\\%\\^\\&\\*\\(\\)\\-\\=\\+\\[\\{\\]\\}\\\\\\|\\;\\:\\'\\\"\\,\\.\\<\\>\\/\\?\\s]+)",
   "indentationRules": {
-    "increaseIndentPattern": "^((?!\\/\\/).)*(\\{[^}\"'`]*|\\([^)\"'`]*|\\[[^\\]\"'`]*)$", // TODO add indentation helpers for if then else and similar
+    "increaseIndentPattern": "^((?!\\/\\/).)*(\\{[^}\"'`]*|\\([^)\"'`]*|\\[[^\\]\"'`]*)|begin^end$", // TODO add indentation helpers for if then else and similar
     "decreaseIndentPattern": "^((?!.*?\\/\\*).*\\*/)?\\s*[\\)\\}\\]].*$"
   }
 }

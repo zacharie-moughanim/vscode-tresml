@@ -4,16 +4,21 @@
   //   "blockComment": ["/*", "*/"]
   // },
   "brackets": [
+    ["%{", "}%"],
+    ["<[", "]>"],
     ["<{", "}>"],
     // ["[", "]"],
     // ["{", "}"],
-    ["(", ")"]
+    ["(", ")"],
+    ["begin", "end"]
   ],
   "autoClosingPairs": [
     { "open": "<{", "close": "}>", "comment": "this is actually useless" },
+    { "open": "<[", "close": "]>" },
     { "open": "<", "close": ">" },
     { "open": "{", "close": "}" },
     { "open": "(", "close": ")" },
+    { "open": "begin", "close": "end" },
     { "open": "'", "close": "'", "notIn": ["string", "comment"] },
     { "open": "\"", "close": "\"", "notIn": ["string"] },
   ],
