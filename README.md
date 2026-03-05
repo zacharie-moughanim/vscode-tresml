@@ -1,6 +1,6 @@
 # TresML VSCode extension
 
-TresML language extension for VSCode.
+Official [TresML](https://github.com/Ilianmgh/tresfreroserver.git) language extension for VSCode.
 
 ## Features
 
