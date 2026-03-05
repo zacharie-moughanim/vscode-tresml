@@ -7,7 +7,7 @@
   ],
   "publisher": "tresml-lang",
   "icon": "./icons/tresml_with_name.png",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "MIT",
   "repository": {
     "type": "git",
