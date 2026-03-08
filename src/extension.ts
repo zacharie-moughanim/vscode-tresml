@@ -9,18 +9,26 @@ import {
   TransportKind
 } from 'vscode-languageclient/node';
 
+const path = require('path');
 const platform : string = process.platform;
-let filePathSeparator : string; // The separator between folder along a path ; it's a slash '/' for Unix-like system and a backslash '\' for windows. 
-
 var exec = require('child_process').exec;
+
 let debugChannel	: vscode.OutputChannel;
 const noWorkDirErrorMessage : string = "No working directory found, try opening a directory.";
+
+let filePathSeparator : string; // The separator between folder along a path ; it's a slash '/' for Unix-like system and a backslash '\' for windows. 
+let osName : string;
+let exeExtension : string;
 
 export function activate(context: vscode.ExtensionContext) {
 	if (platform === 'win32') {
 		filePathSeparator = '\\';
+		osName = "Windows";
+		exeExtension = "exe";
 	} else { // Since values of platform can be aix, darwin, freebsd, linux, openbsd, sunos or win32 and that, except Windows, all these are Unix-like and use / as a path separator, we assume that all non-Windows supported platform uses '/' as a path separator.
 		filePathSeparator = '/';
+		osName = "Unix";
+		exeExtension = "x";
 	}
 
 	// Setting up the debug channel
@@ -30,25 +38,6 @@ export function activate(context: vscode.ExtensionContext) {
 	let workDir : string | undefined = undefined; // Actually at some point e.g. when we allow multi-file TresML projects.
 	// Directory of the extension
 	let extensionDir : string = context.extensionPath;
-
-	// Building TresML interpreter
-	exec (`cd ${extensionDir}${filePathSeparator}tresml_interpreter && make`, (error : any, stdout : any, stderr : any) => {	
-		if (error) {
-			const errorMessage : string = `Error occured while compiling TresML: ${error}`;
-			debugChannel.appendLine(errorMessage);
-			debugChannel.show(true);
-			console.error(errorMessage);
-			return;
-		}
-		if (stderr) {
-			const stderrMessage : string = `Error messages during compilation of TresML: ${stderr}`;
-			debugChannel.appendLine(stderrMessage);
-			console.error(stderrMessage);
-		}
-		const outputMessage : string = `TresML interpreter correctly compiled (or was already compiled) output of compilation:\n${stdout}`;
-		debugChannel.appendLine(outputMessage);
-		console.log(outputMessage);
-	});
 
 	if(vscode.workspace.workspaceFolders !== undefined) {
 		workDir = vscode.workspace.workspaceFolders[0].uri.path;
@@ -69,11 +58,13 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 		
 		if (vscode.window.activeTextEditor !== undefined) {
-				const fileToCompile : string = vscode.window.activeTextEditor.document.uri.path;
-				const sourceFileParentDir : string = fileToCompile.replace(/\/.*.tml$/i, "");
-				vscode.window.showInformationMessage(sourceFileParentDir);
+				const fileToCompile : string = vscode.window.activeTextEditor.document.uri.fsPath;
+				const sourceFileParentDir : string = path.dirname(fileToCompile);
 				const outputFile : string = fileToCompile.replace(/.tml$/i, ".html"); // output file is the same file name with .html extension instead of .tml
-				exec (`cd ${sourceFileParentDir} && ${extensionDir}${filePathSeparator}tresml_interpreter${filePathSeparator}produce_page.x ${fileToCompile} ${outputFile} -noServerData`, (error : any, stdout : any, stderr : any) => {	
+				debugChannel.appendLine(sourceFileParentDir);
+				debugChannel.appendLine(fileToCompile);
+				debugChannel.show(true);
+				exec (`cd ${sourceFileParentDir} && ${extensionDir}${filePathSeparator}tresml_interpreter${filePathSeparator}bin${filePathSeparator}${osName}${filePathSeparator}x86_64${filePathSeparator}produce_page.${exeExtension} ${fileToCompile} ${outputFile} -noServerData`, (error : any, stdout : any, stderr : any) => {	
 					if (error) {
 						const errorMessage : string = `Error occured during HTML output of TresML file: ${error}`;
 						debugChannel.appendLine(errorMessage);
