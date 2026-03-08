@@ -7,7 +7,7 @@
   ],
   "publisher": "tresml-lang",
   "icon": "./icons/tresml_with_name.png",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -19,7 +19,22 @@
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
-    "commands": [],
+    "commands": [
+      {
+        "command": "tresml.compile",
+        "title": "Export to HTML",
+        "category": "TresML",
+        "icon": "$(file-code)"
+      }
+    ],
+    "menus": {
+      "editor/title/run": [
+        {
+          "when": "resourceLangId == tresml && editorTextFocus",
+          "command": "tresml.compile"
+        }
+      ]
+    },
     "languages": [
       {
         "id": "tresml",
@@ -92,6 +107,8 @@
   },
   "dependencies": {
     "@vscode/vsce": "^3.7.1",
-    "vsce": "^2.15.0"
+    "glob": "^11.0.0",
+    "vsce": "^1.97.0",
+    "vscode-languageclient": "^9.0.1"
   }
 }
