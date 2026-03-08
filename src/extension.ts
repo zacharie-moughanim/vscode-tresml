@@ -83,6 +83,26 @@ export function activate(context: vscode.ExtensionContext) {
 						console.log(outputMessage);
 					}
 				});
+				// const simpleBrowserExt : vscode.Extension<any> | undefined = vscode.extensions.getExtension("vscode.simple-browser");
+
+				// let simpleBrowerCmd : string = "simpleBrowser.show";
+
+				// if (simpleBrowserExt !== undefined) {
+				// 	if( simpleBrowserExt.isActive === false ){
+				// 		simpleBrowserExt.activate().then(
+				// 			function(){
+				// 				console.log( "Extension activated");
+				// 				vscode.commands.executeCommand(simpleBrowerCmd, [outputFile]);
+				// 			},
+				// 			function(){
+				// 				console.log( "Extension activation failed");
+				// 			}
+				// 		);   
+				// 	} else {
+				// 		vscode.commands.executeCommand(simpleBrowerCmd, [outputFile]);
+				// 	}
+				// }
+
 			} else {
 				vscode.window.showErrorMessage("No active file in text editor when TresML is called. Select an active file to compile.");
 			}

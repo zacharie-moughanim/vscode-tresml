@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.1.1] - 2026-03-08
+
+- Update README.
+
 ## [1.1.0] - 2026-03-08
 
 - Add command to directly compile a TresML file into HTML.
