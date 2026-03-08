@@ -24,12 +24,6 @@ With a light mode:
 
 [![Syntax highlighting example light theme](./images/syntax_highlighting_light_example.png)](https://github.com/Ilianmgh/tresfreroserver/blob/main/html/test_ml/showcase_test.tml)
 
-## Dependencies
-
-To compile the TresML interpreter included in this extension, you need to have [OCaml](https://ocaml.org/install) installed along with the following extensions:
-- [ocamlfind](https://opam.ocaml.org/packages/ocamlfind/) ;
-- [ocaml-sqlite3](https://opam.ocaml.org/packages/sqlite3/).
-
 <!-- ## Requirements -->
 
 <!-- ## Extension Settings -->
