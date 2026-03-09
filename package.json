@@ -35,6 +35,27 @@
         }
       ]
     },
+    "configuration": {
+      "title": "TresML",
+      "type": "object",
+      "properties": {
+        "TresML.tmlInterpreter.version": {
+          "type": "string",
+          "markdownDescription": "Which version of the TresML interpreter to use.\n\nThe native assembly interpreter requires no dependency, but check if your configuration is supported in the extension's README.\n\nThe bytecode can be used on any machine and system, but you need to have an [OCaml intepreter](https://ocaml.org/install) installed, see the dependencies in the README.",
+          "enum": ["Native", "Bytecode"],
+          "default": "Native",
+          "comment": "add option WASM when implemented",
+          "order": 0
+        },
+        "TresML.tmlInterpreter.machineArchitecture": {
+          "type": "string",
+          "markdownDescription": "If you selected the `Native` version of the TresML interpreter, select the architecture of your machine's CPU. The only choices displayed are the supported architecture for the native compiled interpreter. (If you didn't select `Native` this setting is ignored).",
+          "default": "x86_64",
+          "enum": ["x86_64"],
+          "order": 1
+        }
+      }
+    },
     "languages": [
       {
         "id": "tresml",

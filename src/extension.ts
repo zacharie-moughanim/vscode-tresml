@@ -16,9 +16,38 @@ var exec = require('child_process').exec;
 let debugChannel	: vscode.OutputChannel;
 const noWorkDirErrorMessage : string = "No working directory found, try opening a directory.";
 
+// Current working directory, if it exists
+let workDir : string | undefined = undefined; // Actually use at some point e.g. when we allow multi-file TresML projects.
+
 let filePathSeparator : string; // The separator between folder along a path ; it's a slash '/' for Unix-like system and a backslash '\' for windows. 
 let osName : string;
 let exeExtension : string;
+let architecture : string | undefined;
+let interpreterVersion : string | undefined;
+const nativeIntepreterFolder : string = "Native";
+const bytecodeIntepreterFolder : string = "Bytecode";
+
+/// Updates global variables from settings.json and contextual values (e.g. current working directory).
+function updateSettings() {
+	// Fetching the architecture and selected intepreter version's from settings
+	const configArchi : string | undefined = vscode.workspace.getConfiguration('TresML').get("tmlInterpreter.machineArchitecture");
+	const configInterpreterVersion : string | undefined = vscode.workspace.getConfiguration('TresML').get("tmlInterpreter.version");
+	if (configArchi !== undefined) {
+		architecture = configArchi;
+	}
+	if (configInterpreterVersion !== undefined) {
+		interpreterVersion = configInterpreterVersion;
+	}
+	// Setting current working directory
+	if(workDir === undefined) {
+		if(vscode.workspace.workspaceFolders !== undefined) { // if at the current call we found a working directory
+			workDir = vscode.workspace.workspaceFolders[0].uri.path;
+		} else {
+			debugChannel.appendLine(noWorkDirErrorMessage);
+			vscode.window.showWarningMessage(noWorkDirErrorMessage);
+		}
+	}
+}
 
 export function activate(context: vscode.ExtensionContext) {
 	if (platform === 'win32') {
@@ -30,30 +59,26 @@ export function activate(context: vscode.ExtensionContext) {
 		osName = "Unix";
 		exeExtension = "x";
 	}
-
 	// Setting up the debug channel
 	debugChannel = vscode.window.createOutputChannel("TresML Debug", {log : true});
 
-	// Current working directory, if it exists
-	let workDir : string | undefined = undefined; // Actually at some point e.g. when we allow multi-file TresML projects.
 	// Directory of the extension
 	let extensionDir : string = context.extensionPath;
-
-	if(vscode.workspace.workspaceFolders !== undefined) {
-		workDir = vscode.workspace.workspaceFolders[0].uri.path;
-	} else {
-		debugChannel.appendLine(noWorkDirErrorMessage);
-		console.error(noWorkDirErrorMessage);
-	}
+	
+	updateSettings();
 
 	const disposable_tml_compile = vscode.commands.registerCommand('tresml.compile', () => {
-		if(workDir === undefined) {
-			if(vscode.workspace.workspaceFolders !== undefined) { // if at the current call we found a working directory
-				workDir = vscode.workspace.workspaceFolders[0].uri.path;
-			} else {
-				debugChannel.appendLine(noWorkDirErrorMessage);
-				debugChannel.show(true);
-				console.error(noWorkDirErrorMessage);
+		updateSettings();
+
+		if (interpreterVersion === undefined) {
+			vscode.window.showErrorMessage("Couldn't compile TresML file: The interpreter version setting is undefined, please select one in the settings.");
+			return;
+		} else {
+			if (interpreterVersion === nativeIntepreterFolder) {
+				if (architecture === undefined) {
+					vscode.window.showErrorMessage("Couldn't compile TresML file: The native compiled intepreter is selected, but the architecture setting is undefined. please select one in the settings.");
+					return;
+				}
 			}
 		}
 		
@@ -61,14 +86,18 @@ export function activate(context: vscode.ExtensionContext) {
 				const fileToCompile : string = vscode.window.activeTextEditor.document.uri.fsPath;
 				const sourceFileParentDir : string = path.dirname(fileToCompile);
 				const outputFile : string = fileToCompile.replace(/.tml$/i, ".html"); // output file is the same file name with .html extension instead of .tml
-				debugChannel.appendLine(sourceFileParentDir);
-				debugChannel.appendLine(fileToCompile);
-				debugChannel.show(true);
-				exec (`cd ${sourceFileParentDir} && ${extensionDir}${filePathSeparator}tresml_interpreter${filePathSeparator}bin${filePathSeparator}${osName}${filePathSeparator}x86_64${filePathSeparator}produce_page.${exeExtension} ${fileToCompile} ${outputFile} -noServerData`, (error : any, stdout : any, stderr : any) => {	
+				debugChannel.appendLine(`Compiling ${fileToCompile} to ${outputFile}`);
+				let interpreterCmd : string = "echo \"Something went wrong, the interpreter version is not defined where it should be.\" ; false"; // Will always fail if the version of the interpreter is undefined (this would be a bug)
+				if (interpreterVersion === nativeIntepreterFolder) {
+					interpreterCmd = `${extensionDir}${filePathSeparator}tresml_interpreter${filePathSeparator}bin${filePathSeparator}${nativeIntepreterFolder}${filePathSeparator}${osName}${filePathSeparator}${architecture}${filePathSeparator}produce_page.${exeExtension}`;
+				} else if (interpreterVersion === bytecodeIntepreterFolder) {
+					interpreterCmd = `opam exec -- ocamlrun ${extensionDir}${filePathSeparator}tresml_interpreter${filePathSeparator}bin${filePathSeparator}${bytecodeIntepreterFolder}${filePathSeparator}produce_page.bytecode`;
+				}
+				debugChannel.appendLine(`Executing:\n${interpreterCmd} ${fileToCompile} ${outputFile} -noServerData`);
+				exec (`${interpreterCmd} ${fileToCompile} ${outputFile} -noServerData`, (error : any, stdout : any, stderr : any) => {
 					if (error) {
 						const errorMessage : string = `Error occured during HTML output of TresML file: ${error}`;
 						debugChannel.appendLine(errorMessage);
-						debugChannel.show(true);
 						console.error(errorMessage);
 						return;
 					}
@@ -83,26 +112,6 @@ export function activate(context: vscode.ExtensionContext) {
 						console.log(outputMessage);
 					}
 				});
-				// const simpleBrowserExt : vscode.Extension<any> | undefined = vscode.extensions.getExtension("vscode.simple-browser");
-
-				// let simpleBrowerCmd : string = "simpleBrowser.show";
-
-				// if (simpleBrowserExt !== undefined) {
-				// 	if( simpleBrowserExt.isActive === false ){
-				// 		simpleBrowserExt.activate().then(
-				// 			function(){
-				// 				console.log( "Extension activated");
-				// 				vscode.commands.executeCommand(simpleBrowerCmd, [outputFile]);
-				// 			},
-				// 			function(){
-				// 				console.log( "Extension activation failed");
-				// 			}
-				// 		);   
-				// 	} else {
-				// 		vscode.commands.executeCommand(simpleBrowerCmd, [outputFile]);
-				// 	}
-				// }
-
 			} else {
 				vscode.window.showErrorMessage("No active file in text editor when TresML is called. Select an active file to compile.");
 			}
