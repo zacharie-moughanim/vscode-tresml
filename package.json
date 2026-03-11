@@ -93,7 +93,7 @@
           "source.tml"
         ],
         "embeddedLanguages": {
-          "meta.embedded.tresml_script": "tresml_script"
+          "meta.embedded.tresml_script": "tresml_script", "comment": "sthelse.tresml_script + tokenTypes / meta.embedded.tresml_script"
         }
       },
       {
@@ -104,6 +104,9 @@
           "meta.embedded.tresml": "tresml",
           "meta.embedded.js": "javascript",
           "meta.embedded.html": "html"
+        },
+        "tokenTypes": {
+          "comment.block.tml": "comment"
         }
       }
     ]

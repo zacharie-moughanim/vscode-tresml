@@ -1,6 +1,6 @@
 {
   "scopeName": "tresml.tresml_script.block",
-  "injectionSelector": "L:source.tml",
+  "injectionSelector": "R:source.tml",
   "patterns": [{ "include": "#tresml_script-expression" }],
   "repository": {
     "tresml_script-expression": {

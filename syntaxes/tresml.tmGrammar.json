@@ -4,26 +4,14 @@
   "repository": {
     "expression": {
       "patterns": [
-        {"include": "#test-html-block"},
-        {"include": "#test2-html-block"}
+        {"include": "#toplevel-html-block"}
       ]
     },
-    "test-html-block": {
+    "toplevel-html-block": {
       "patterns": [
         {
           "name": "html.block",
           "begin": "\\A",
-          "contentName": "meta.embedded.html",
-          "patterns": [{ "include": "text.html.derivative" }]
-        }
-      ]
-    },
-    "test2-html-block": {
-      "patterns": [
-        {
-          "name": "html.block",
-          "begin": "<\\[",
-          "end": "\\]>",
           "contentName": "meta.embedded.html",
           "patterns": [{ "include": "text.html.derivative" }]
         }

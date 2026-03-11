@@ -4,11 +4,13 @@
   "repository": {
     "expression": {
       "patterns": [
+        { "include": "#comments" },
         { "include": "#tresml_page-expression" },
         { "include": "#binding-word" },
         { "include": "#function-declaration-word" },
         { "include": "#control-flow-keyword" },
         { "include": "#beginend" },
+        { "include": "#module_inclusion" },
         { "include": "#other-keyword" },
         { "include": "#integer-literal" },
         { "include": "#boolean-literal" },
@@ -49,6 +51,15 @@
       },
       "name": "expression.group",
       "patterns": [{ "include": "#expression" }]
+    },
+    "comments": {
+      "begin": "\\(\\*",
+      "end": "\\*\\)",
+      "name": "comment.block.tml"
+    },
+    "module_inclusion": {
+      "match": "import|open|include",
+      "name": "keyword.other.tml"
     },
     "binding-word": {
       "match": "let",
