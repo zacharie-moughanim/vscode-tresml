@@ -14,7 +14,7 @@ const platform : string = process.platform;
 var exec = require('child_process').exec;
 
 let debugChannel	: vscode.OutputChannel;
-const noWorkDirErrorMessage : string = "No working directory found, try opening a directory.";
+const noWorkDirErrorMessage : string = "No working directory found. Defaulting to parent directory of opened file.";
 
 // Current working directory, if it exists
 let workDir : string | undefined = undefined; // Actually use at some point e.g. when we allow multi-file TresML projects.

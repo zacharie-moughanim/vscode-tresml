@@ -37,4 +37,4 @@ If you use the command to compile TresML files and choose to compile using the b
 ## Known Issues
 
 - The TresML intepreter binaries only target an x86_64 architecture for now. The extension provides executables for Windows (compiled with an [OCaml cross-compiler targetting Windows](https://github.com/ocaml-cross/opam-cross-windows)) and Unix systems (compiled with ocamlopt).
-- Syntax highlighting is misleading when opening tresml brackets within e.g. strings, comments or even HTML comments. Can't seem to allow embedded tresml code to be correctly highlighted within e.g. javascript strings while not highlighted within comments. Semantically, tresml code within javascript strings is evaluated whereas it's not evaluated within tresml comments.
+- Syntax highlighting is misleading when opening tresml brackets within e.g. strings, comments or even HTML comments. Can't seem to allow embedded tresml code to be correctly highlighted within e.g. javascript strings while not highlighted within comments. Semantically, tresml code within javascript strings is evaluated whereas it's not evaluated within tresml comments. Should switch to semantic highlighting to fix maybe.

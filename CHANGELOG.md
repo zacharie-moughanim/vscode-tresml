@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.1.2] - 2026-03-08
+
+- Implemented import.
+
 ## [1.1.1] - 2026-03-08
 
 - Update README.
