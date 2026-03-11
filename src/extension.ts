@@ -84,7 +84,12 @@ export function activate(context: vscode.ExtensionContext) {
 		
 		if (vscode.window.activeTextEditor !== undefined) {
 				const fileToCompile : string = vscode.window.activeTextEditor.document.uri.fsPath;
-				const sourceFileParentDir : string = path.dirname(fileToCompile);
+				let rootForCompilation : string;
+				if (workDir !== undefined) {
+					rootForCompilation = workDir;
+				} else {
+					rootForCompilation = path.dirname(fileToCompile);
+				}
 				const outputFile : string = fileToCompile.replace(/.tml$/i, ".html"); // output file is the same file name with .html extension instead of .tml
 				debugChannel.appendLine(`Compiling ${fileToCompile} to ${outputFile}`);
 				let interpreterCmd : string = "echo \"Something went wrong, the interpreter version is not defined where it should be.\" ; false"; // Will always fail if the version of the interpreter is undefined (this would be a bug)
@@ -93,8 +98,9 @@ export function activate(context: vscode.ExtensionContext) {
 				} else if (interpreterVersion === bytecodeIntepreterFolder) {
 					interpreterCmd = `opam exec -- ocamlrun ${extensionDir}${filePathSeparator}tresml_interpreter${filePathSeparator}bin${filePathSeparator}${bytecodeIntepreterFolder}${filePathSeparator}produce_page.bytecode`;
 				}
-				debugChannel.appendLine(`Executing:\n${interpreterCmd} ${fileToCompile} ${outputFile} -noServerData`);
-				exec (`${interpreterCmd} ${fileToCompile} ${outputFile} -noServerData`, (error : any, stdout : any, stderr : any) => {
+				const compilationLine : string = `${interpreterCmd} ${fileToCompile} ${outputFile} -noServerData --root ${rootForCompilation}`;
+				debugChannel.appendLine(`Executing:\n${compilationLine}`);
+				exec (compilationLine, (error : any, stdout : any, stderr : any) => {
 					if (error) {
 						const errorMessage : string = `Error occured during HTML output of TresML file: ${error}`;
 						debugChannel.appendLine(errorMessage);

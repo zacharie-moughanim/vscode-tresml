@@ -2,6 +2,10 @@
 
 ## [1.1.2] - 2026-03-08
 
+- Properly interfaced import of files with extension.
+
+## [1.1.2] - 2026-03-08
+
 - Implemented import.
 
 ## [1.1.1] - 2026-03-08
