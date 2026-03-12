@@ -1,10 +1,10 @@
 # Change Log
 
-## [1.1.2] - 2026-03-08
+## [1.2.0] - 2026-03-11
 
 - Properly interfaced import of files with extension.
 
-## [1.1.2] - 2026-03-08
+## [1.1.2] - 2026-03-11
 
 - Implemented import.
 
